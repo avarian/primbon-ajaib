@@ -1,0 +1,7 @@
+FROM cosmtrek/air
+
+RUN apt-get update && \
+    apt-get install -y xz-utils libxrender1 libxext6 libfontconfig1 xvfb
+
+RUN curl -sSo /usr/local/bin/wait-for-it.sh "https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh" && \
+    chmod +x /usr/local/bin/wait-for-it.sh

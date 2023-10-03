@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+
+  air:
+    image: primbon-ajaib-backend
+    build:
+      context: .
+      dockerfile: Dockerfile.air
+    environment:
+      - "TZ=Asia/Jakarta"
+      - "air_wd=/app"
+    env_file:
+      - ".env"
+    ports:
+      - "${BACKEND_LISTEN_PORT:-8080}:8080"
+    volumes:
+      - ".:/app"
+      - "go-pkg-data:/go/pkg"
+    entrypoint: >
+      /bin/sh -c '
+      /go/bin/air -- serve;
+      '
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  go-pkg-data:

@@ -1,0 +1,8 @@
+/tmp
+/.vscode
+*.pdf
+/.idea
+.env
+*-local.yml
+modd.*
+localapp

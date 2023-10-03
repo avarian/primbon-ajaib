@@ -1,0 +1,47 @@
+# Bind service to address
+listen_address: ":8080"
+
+# Log file output, set empty value to output to stderr
+log: ""
+
+# Enable debugging output
+verbose: false
+
+# Database connection profile
+mysql:
+  host: "mysql"
+  port: "3306"
+  database: "primbon_ajaib"
+  user: "root"
+  password: "root"
+
+# Redis connection profile
+redis:
+  url: "redis://redis:6379"
+
+# Queue connection
+queue:
+  num_goroutines: 4
+  max_execution_time: 180 # seconds
+  idle_wait: 10 # seconds
+  max_retry: 10 # attempts
+
+# S3 Compatible storage access
+s3:
+  accessKeyId: "miniokey"
+  secretAccessKey: "miniosecret"
+  region: "us-east-1"
+  endpoint: "http://minio:9000"
+
+s3_external_url: "http://localhost:9000"
+
+mailer:
+  elastic_api_key: ""
+  elastic_channel: ""
+
+messenger:
+  infobip_api_key: ""
+  infobip_callback_url: ""
+  infobip_sender: ""
+
+jwt_secret: "aiwyImvy7vGt2M70XmbL3lzpWQbG3kfu"
