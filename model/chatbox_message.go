@@ -3,19 +3,14 @@ package model
 import (
 	"time"
 
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
-type Account struct {
+type ChatboxMessage struct {
 	ID          uint            `json:"id" gorm:"not null"`
-	Name        string          `json:"name" gorm:"not null;size:255"`
-	Email       string          `json:"email" gorm:"size:255;unique"`
-	PhoneNumber string          `json:"phone_number" gorm:"size:255;unique"`
-	Password    string          `json:"password" gorm:"size:255"`
-	Address     string          `json:"address" gorm:"size:255"`
-	Type        string          `json:"type" gorm:"size:255"`
-	ValidUntil  *datatypes.Date `json:"valid_until"`
+	ChatboxCode string          `json:"chatbox_code" gorm:"not null;size:255"`
+	Role        string          `json:"name" gorm:"not null;size:255"`
+	Content     string          `json:"content" gorm:"not null"`
 	CreatedBy   string          `json:"created_by" gorm:"size:255;default:SYSTEM"`
 	UpdatedBy   string          `json:"updated_by" gorm:"size:255;default:SYSTEM"`
 	DeletedBy   *string         `json:"deleted_by" gorm:"size:255"`

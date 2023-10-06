@@ -49,10 +49,12 @@ func serveCommand() (err error) {
 	//
 	home := controllers.NewHomeController()
 	account := controllers.NewAccountController(db, validator, viper.GetString("jwt_secret"))
+	openaiChatbox := controllers.NewOpenaiChatboxController(db, validator, viper.GetString("openai_api_key"))
 
 	server := http.NewServer(viper.GetString("listen_address"),
 		home,
 		account,
+		openaiChatbox,
 	)
 
 	//

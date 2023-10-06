@@ -18,6 +18,7 @@ type Server struct {
 func NewServer(listenAddress string,
 	home *controllers.HomeController,
 	account *controllers.AccountController,
+	openaiChatbox *controllers.OpenaiChatboxController,
 ) *Server {
 
 	router := gin.Default()
@@ -27,6 +28,11 @@ func NewServer(listenAddress string,
 	router.GET("/", home.GetHome)
 	router.POST("/register", account.PostRegister)
 	router.POST("/login", account.PostLogin)
+
+	openaiRouter := router.Group("/openai").Use(Auth())
+	{
+		openaiRouter.POST("/chatbox", openaiChatbox.PostChatbox)
+	}
 
 	httpServer := &http.Server{
 		Addr:              listenAddress,

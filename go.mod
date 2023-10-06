@@ -5,19 +5,24 @@ go 1.18
 require (
 	github.com/aws/aws-sdk-go v1.44.69
 	github.com/gin-gonic/gin v1.8.1
+	github.com/go-playground/locales v0.14.0
+	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/google/uuid v1.3.0
+	github.com/sashabaranov/go-openai v1.15.4
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
 	github.com/taylorchu/work v0.2.7
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
-	golang.org/x/net v0.0.0-20220630215102-69896b714898
+	golang.org/x/crypto v0.6.0
+	golang.org/x/net v0.6.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
-	gorm.io/driver/mysql v1.3.4
-	gorm.io/driver/postgres v1.3.8
-	gorm.io/gorm v1.23.7
+	gorm.io/datatypes v1.2.0
+	gorm.io/driver/mysql v1.4.7
+	gorm.io/driver/postgres v1.5.0
+	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
 )
 
 require (
@@ -26,21 +31,13 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/go-playground/locales v0.14.0 // indirect
-	github.com/go-playground/universal-translator v0.18.0 // indirect
-	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.9.8 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.12.1 // indirect
-	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgproto3/v2 v2.3.0 // indirect
-	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
-	github.com/jackc/pgtype v1.11.0 // indirect
-	github.com/jackc/pgx/v4 v4.16.1 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
+	github.com/jackc/pgx/v5 v5.3.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
@@ -61,8 +58,8 @@ require (
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

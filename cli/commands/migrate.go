@@ -26,6 +26,8 @@ func migrateCommand() (err error) {
 	db := newMysqlDB("mysql")
 	db.AutoMigrate(
 		&model.Account{},
+		&model.Chatbox{},
+		&model.ChatboxMessage{},
 	)
 	return nil
 }

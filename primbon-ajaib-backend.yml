@@ -45,3 +45,4 @@ messenger:
   infobip_sender: ""
 
 jwt_secret: "aiwyImvy7vGt2M70XmbL3lzpWQbG3kfu"
+openai_api_key: ""

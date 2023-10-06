@@ -11,23 +11,23 @@ import (
 	"gorm.io/gorm"
 )
 
-type AccountRepository struct {
+type ChatboxMessageRepository struct {
 	db *gorm.DB
 }
 
-func NewAccountRepository(db *gorm.DB) *AccountRepository {
-	return &AccountRepository{
+func NewChatboxMessageRepository(db *gorm.DB) *ChatboxMessageRepository {
+	return &ChatboxMessageRepository{
 		db: db,
 	}
 }
 
-func (s *AccountRepository) FilterScope(r *http.Request) func(db *gorm.DB) *gorm.DB {
+func (s *ChatboxMessageRepository) FilterScope(r *http.Request) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		return db
 	}
 }
 
-func (s *AccountRepository) PaginateScope(r *http.Request) func(db *gorm.DB) *gorm.DB {
+func (s *ChatboxMessageRepository) PaginateScope(r *http.Request) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		q := r.URL.Query()
 		page, _ := strconv.Atoi(q.Get("page"))
@@ -60,10 +60,10 @@ func (s *AccountRepository) PaginateScope(r *http.Request) func(db *gorm.DB) *go
 	}
 }
 
-func (s *AccountRepository) MetaPaginate(r *http.Request) map[string]interface{} {
+func (s *ChatboxMessageRepository) MetaPaginate(r *http.Request) map[string]interface{} {
 	q := r.URL.Query()
 	var totalRows int64
-	s.db.Model(model.Account{}).Scopes(s.FilterScope(r)).Count(&totalRows)
+	s.db.Model(model.ChatboxMessage{}).Scopes(s.FilterScope(r)).Count(&totalRows)
 
 	pageSize, _ := strconv.Atoi(q.Get("page_size"))
 	switch {
@@ -86,8 +86,8 @@ func (s *AccountRepository) MetaPaginate(r *http.Request) map[string]interface{}
 	return meta
 }
 
-func (s *AccountRepository) Index(r *http.Request, preload ...string) ([]model.Account, *gorm.DB) {
-	var table []model.Account
+func (s *ChatboxMessageRepository) Index(r *http.Request, preload ...string) ([]model.ChatboxMessage, *gorm.DB) {
+	var table []model.ChatboxMessage
 	tx := s.db.Scopes(s.FilterScope(r), s.PaginateScope(r))
 	for _, v := range preload {
 		tx = tx.Preload(v)
@@ -97,8 +97,8 @@ func (s *AccountRepository) Index(r *http.Request, preload ...string) ([]model.A
 	return table, query
 }
 
-func (s *AccountRepository) All(r *http.Request, preload ...string) ([]model.Account, *gorm.DB) {
-	var table []model.Account
+func (s *ChatboxMessageRepository) All(r *http.Request, preload ...string) ([]model.ChatboxMessage, *gorm.DB) {
+	var table []model.ChatboxMessage
 	tx := s.db.Scopes(s.FilterScope(r))
 	for _, v := range preload {
 		tx = tx.Preload(v)
@@ -108,8 +108,8 @@ func (s *AccountRepository) All(r *http.Request, preload ...string) ([]model.Acc
 	return table, query
 }
 
-func (s *AccountRepository) One(r *http.Request, preload ...string) (model.Account, *gorm.DB) {
-	var table model.Account
+func (s *ChatboxMessageRepository) One(r *http.Request, preload ...string) (model.ChatboxMessage, *gorm.DB) {
+	var table model.ChatboxMessage
 	tx := s.db.Scopes(s.FilterScope(r))
 	for _, v := range preload {
 		tx = tx.Preload(v)
@@ -119,8 +119,8 @@ func (s *AccountRepository) One(r *http.Request, preload ...string) (model.Accou
 	return table, query
 }
 
-func (s *AccountRepository) OneById(id int, preload ...string) (model.Account, *gorm.DB) {
-	var table model.Account
+func (s *ChatboxMessageRepository) OneById(id int, preload ...string) (model.ChatboxMessage, *gorm.DB) {
+	var table model.ChatboxMessage
 	tx := s.db.Where("id = ?", id)
 	for _, v := range preload {
 		tx = tx.Preload(v)
@@ -130,15 +130,15 @@ func (s *AccountRepository) OneById(id int, preload ...string) (model.Account, *
 	return table, query
 }
 
-func (s *AccountRepository) Create(data model.Account) (model.Account, *gorm.DB) {
-	var table model.Account
+func (s *ChatboxMessageRepository) Create(data model.ChatboxMessage) (model.ChatboxMessage, *gorm.DB) {
+	var table model.ChatboxMessage
 	s.AssignData(&table, data)
 	query := s.db.Create(&table)
 	return table, query
 }
 
-func (s *AccountRepository) Update(id int, data model.Account) (model.Account, *gorm.DB) {
-	var table model.Account
+func (s *ChatboxMessageRepository) Update(id int, data model.ChatboxMessage) (model.ChatboxMessage, *gorm.DB) {
+	var table model.ChatboxMessage
 	table, result := s.OneById(id)
 	if result.RowsAffected == 0 {
 		result.Error = fmt.Errorf("data not found with id = %d", id)
@@ -149,16 +149,16 @@ func (s *AccountRepository) Update(id int, data model.Account) (model.Account, *
 	return table, query
 }
 
-func (s *AccountRepository) Delete(id int, isHard bool) *gorm.DB {
+func (s *ChatboxMessageRepository) Delete(id int, isHard bool) *gorm.DB {
 	tx := s.db
 	if isHard {
 		tx = tx.Unscoped()
 	}
-	query := tx.Delete(&model.Account{}, id)
+	query := tx.Delete(&model.ChatboxMessage{}, id)
 	return query
 }
 
-func (s *AccountRepository) AssignData(table *model.Account, data model.Account) {
+func (s *ChatboxMessageRepository) AssignData(table *model.ChatboxMessage, data model.ChatboxMessage) {
 	dataRV := reflect.ValueOf(data)
 	tableRV := reflect.ValueOf(table)
 	tableRVE := tableRV.Elem()
@@ -171,9 +171,9 @@ func (s *AccountRepository) AssignData(table *model.Account, data model.Account)
 	}
 }
 
-func (s *AccountRepository) OneByEmail(email string, preload ...string) (model.Account, *gorm.DB) {
-	var table model.Account
-	tx := s.db.Where("email = ?", email)
+func (s *ChatboxMessageRepository) AllByChatboxCode(chatboxCode string, preload ...string) ([]model.ChatboxMessage, *gorm.DB) {
+	var table []model.ChatboxMessage
+	tx := s.db.Where("chatbox_code = ?", chatboxCode).Order("created_at ASC")
 	for _, v := range preload {
 		tx = tx.Preload(v)
 	}
