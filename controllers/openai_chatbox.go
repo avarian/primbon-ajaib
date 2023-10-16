@@ -144,11 +144,89 @@ func (s *OpenaiChatboxController) PostChatbox(c *gin.Context) {
 		Content:     resp.Choices[0].Message.Content,
 	})
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Success!",
 		"data": gin.H{
 			"chatbox_code": chatbox.Code,
 			"result":       resp.Choices[0].Message,
 		},
+	})
+}
+
+func (s *OpenaiChatboxController) GetListChatbox(c *gin.Context) {
+	// log
+	logCtx := log.WithFields(log.Fields{
+		"api": "GetListChatbox",
+	})
+	username := c.GetString("username")
+	accountRepo := repository.NewAccountRepository(s.db)
+	account, result := accountRepo.OneByEmail(username)
+	if result.Error != nil {
+		err := errors.New("error find account")
+		if result.Error != nil {
+			err = result.Error
+		}
+		logCtx.WithField("reason", err).Error("error find account")
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "account not found"})
+		return
+	} else if result.RowsAffected == 0 {
+		account.ID = 1
+	}
+
+	chatboxRepo := repository.NewChatboxRepository(s.db)
+	chatbox, result := chatboxRepo.AllByAccountID(int(account.ID))
+	if result.Error != nil && !errors.Is(gorm.ErrRecordNotFound, result.Error) {
+		logCtx.WithField("reason", result.Error).Error("error find chatbox message")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "error find chatbox message"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success!",
+		"data":    chatbox,
+	})
+}
+
+func (s *OpenaiChatboxController) GetChatboxMessages(c *gin.Context) {
+	// log
+	logCtx := log.WithFields(log.Fields{
+		"api": "GetListChatbox",
+	})
+
+	code := c.Param("code")
+	username := c.GetString("username")
+	accountRepo := repository.NewAccountRepository(s.db)
+	account, result := accountRepo.OneByEmail(username)
+	if result.Error != nil {
+		err := errors.New("error find account")
+		if result.Error != nil {
+			err = result.Error
+		}
+		logCtx.WithField("reason", err).Error("error find account")
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "account not found"})
+		return
+	} else if result.RowsAffected == 0 {
+		account.ID = 1
+	}
+
+	chatboxRepo := repository.NewChatboxRepository(s.db)
+	chatbox, result := chatboxRepo.OneByCodeAndAccountID(code, int(account.ID))
+	if result.Error != nil || result.RowsAffected == 0 {
+		logCtx.WithField("reason", result.Error).Error("error find chatbox")
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "error find chatbox"})
+		return
+	}
+
+	chatboxMessageRepo := repository.NewChatboxMessageRepository(s.db)
+	chatboxMessage, result := chatboxMessageRepo.AllByChatboxCode(chatbox.Code)
+	if result.Error != nil {
+		logCtx.WithField("reason", result.Error).Error("error find chatbox message")
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "error find chatbox message"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success!",
+		"data":    chatboxMessage,
 	})
 }

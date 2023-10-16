@@ -203,3 +203,14 @@ func (s *ChatboxRepository) OneByCodeAndAccountID(code string, accountId int, pr
 
 	return table, query
 }
+
+func (s *ChatboxRepository) AllByAccountID(accountId int, preload ...string) ([]model.Chatbox, *gorm.DB) {
+	var table []model.Chatbox
+	tx := s.db.Where("account_id = ?", accountId).Order("id DESC").Limit(100)
+	for _, v := range preload {
+		tx = tx.Preload(v)
+	}
+	query := tx.Find(&table)
+
+	return table, query
+}
