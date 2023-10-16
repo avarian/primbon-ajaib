@@ -46,7 +46,7 @@ func Admin() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		typeAccount := context.GetString("type")
 		if typeAccount != "ADMIN" {
-			context.JSON(http.StatusUnprocessableEntity, gin.H{"error": "unauthorized"})
+			context.JSON(http.StatusPreconditionFailed, gin.H{"error": "unauthorized"})
 			context.Abort()
 			return
 		}
@@ -58,7 +58,7 @@ func Premium() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		isPremium := context.GetBool("is_premium")
 		if !isPremium {
-			context.JSON(http.StatusUnprocessableEntity, gin.H{"error": "unauthorized"})
+			context.JSON(http.StatusPreconditionFailed, gin.H{"error": "unauthorized"})
 			context.Abort()
 			return
 		}
