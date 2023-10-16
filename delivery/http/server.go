@@ -28,6 +28,7 @@ func NewServer(listenAddress string,
 	router.GET("/", home.GetHome)
 	router.POST("/register", account.PostRegister)
 	router.POST("/login", account.PostLogin)
+	router.Use(Auth()).POST("/change-pwd", account.PostChangePassword)
 
 	openaiRouter := router.Group("/openai").Use(Auth())
 	{

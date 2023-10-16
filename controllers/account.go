@@ -29,6 +29,11 @@ type PostLoginRequest struct {
 	Password string `json:"password"  validate:"required"`
 }
 
+type PostChangePasswordRequest struct {
+	OldPassword string `json:"old_password"  validate:"required"`
+	NewPassword string `json:"new_password"  validate:"required"`
+}
+
 type JWTClaim struct {
 	Username  string `json:"username"`
 	Email     string `json:"email"`
@@ -181,5 +186,66 @@ func (s *AccountController) PostLogin(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"token": tokenString,
+	})
+}
+
+func (s *AccountController) PostChangePassword(c *gin.Context) {
+	// bind data
+	var req PostChangePasswordRequest
+	if err := c.ShouldBind(&req); err != nil {
+		log.WithField("reason", err).Error("error Binding")
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		return
+	}
+	// validate
+	if err := s.validator.Validate.Struct(&req); err != nil {
+		log.WithField("reason", err).Error("invalid Request")
+		errs := err.(validator.ValidationErrors)
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": errs.Translate(s.validator.Trans)})
+		return
+	}
+
+	// log
+	logCtx := log.WithFields(log.Fields{
+		"api": "PostChangePassword",
+	})
+
+	username := c.GetString("username")
+	accountRepo := repository.NewAccountRepository(s.db)
+	account, result := accountRepo.OneByEmail(username)
+	if result.Error != nil || result.RowsAffected == 0 {
+		err := errors.New("error find account")
+		if result.Error != nil {
+			err = result.Error
+		}
+		logCtx.WithField("reason", err).Error("error find account")
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "account not found"})
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(req.OldPassword)); err != nil {
+		// If the two passwords don't match, return a 401 status
+		logCtx.WithField("reason", err).Error("error compare password")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, nil)
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), 5)
+	if err != nil {
+		logCtx.WithField("reason", err).Error("error hash password")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	account, result = accountRepo.Update(int(account.ID), model.Account{Password: string(hashedPassword)})
+	if result.Error != nil {
+		logCtx.WithField("reason", err).Error("error create account")
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Sucess!",
+		"data":    account,
 	})
 }

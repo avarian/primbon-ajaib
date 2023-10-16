@@ -169,8 +169,6 @@ func (s *OpenaiChatboxController) GetListChatbox(c *gin.Context) {
 		logCtx.WithField("reason", err).Error("error find account")
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "account not found"})
 		return
-	} else if result.RowsAffected == 0 {
-		account.ID = 1
 	}
 
 	chatboxRepo := repository.NewChatboxRepository(s.db)
@@ -205,8 +203,6 @@ func (s *OpenaiChatboxController) GetChatboxMessages(c *gin.Context) {
 		logCtx.WithField("reason", err).Error("error find account")
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "account not found"})
 		return
-	} else if result.RowsAffected == 0 {
-		account.ID = 1
 	}
 
 	chatboxRepo := repository.NewChatboxRepository(s.db)
