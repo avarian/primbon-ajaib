@@ -31,7 +31,7 @@ func NewServer(listenAddress string,
 
 	openaiRouter := router.Group("/openai").Use(Auth())
 	{
-		openaiRouter.POST("/chatbox", openaiChatbox.PostChatbox)
+		openaiRouter.Use(Premium()).POST("/chatbox", openaiChatbox.PostChatbox)
 	}
 
 	httpServer := &http.Server{

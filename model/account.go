@@ -15,7 +15,7 @@ type Account struct {
 	Password    string          `json:"password" gorm:"size:255"`
 	Address     string          `json:"address" gorm:"size:255"`
 	Type        string          `json:"type" gorm:"size:255"`
-	ValidUntil  *datatypes.Date `json:"valid_until"`
+	ValidUntil  datatypes.Date  `json:"valid_until"`
 	CreatedBy   string          `json:"created_by" gorm:"size:255;default:SYSTEM"`
 	UpdatedBy   string          `json:"updated_by" gorm:"size:255;default:SYSTEM"`
 	DeletedBy   *string         `json:"deleted_by" gorm:"size:255"`

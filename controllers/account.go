@@ -30,9 +30,10 @@ type PostLoginRequest struct {
 }
 
 type JWTClaim struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Type     string `json:"type"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	Type      string `json:"type"`
+	IsPremium bool   `json:"is_premium"`
 	jwt.StandardClaims
 }
 
@@ -156,11 +157,16 @@ func (s *AccountController) PostLogin(c *gin.Context) {
 		return
 	}
 
-	expirationTime := time.Now().Add(24 * time.Hour)
+	isPremium := false
+	if time.Now().Before(time.Time(account.ValidUntil)) {
+		isPremium = true
+	}
+	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 	claims := &JWTClaim{
-		Email:    account.Email,
-		Username: account.Email,
-		Type:     account.Type,
+		Email:     account.Email,
+		Username:  account.Email,
+		Type:      account.Type,
+		IsPremium: isPremium,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

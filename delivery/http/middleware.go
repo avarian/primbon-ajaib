@@ -12,9 +12,10 @@ import (
 )
 
 type JWTClaim struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Type     string `json:"type"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	Type      string `json:"type"`
+	IsPremium bool   `json:"is_premium"`
 	jwt.StandardClaims
 }
 
@@ -36,6 +37,7 @@ func Auth() gin.HandlerFunc {
 
 		context.Set("username", claims.Username)
 		context.Set("type", claims.Type)
+		context.Set("is_premium", claims.IsPremium)
 		context.Next()
 	}
 }
@@ -44,7 +46,19 @@ func Admin() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		typeAccount := context.GetString("type")
 		if typeAccount != "ADMIN" {
-			context.JSON(http.StatusPreconditionFailed, gin.H{"error": "unauthorized"})
+			context.JSON(http.StatusUnprocessableEntity, gin.H{"error": "unauthorized"})
+			context.Abort()
+			return
+		}
+		context.Next()
+	}
+}
+
+func Premium() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		isPremium := context.GetBool("is_premium")
+		if !isPremium {
+			context.JSON(http.StatusUnprocessableEntity, gin.H{"error": "unauthorized"})
 			context.Abort()
 			return
 		}

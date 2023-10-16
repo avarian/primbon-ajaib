@@ -102,8 +102,13 @@ func (s *OpenaiChatboxController) PostChatbox(c *gin.Context) {
 	client := openai.NewClient(s.apiKey)
 
 	base := openai.ChatCompletionRequest{
-		Model:    openai.GPT3Dot5Turbo,
-		Messages: []openai.ChatCompletionMessage{},
+		Model: openai.GPT3Dot5Turbo,
+		Messages: []openai.ChatCompletionMessage{
+			{
+				Role:    openai.ChatMessageRoleSystem,
+				Content: "From now you are Primon Ajab!",
+			},
+		},
 	}
 
 	for _, v := range chatboxMessage {
